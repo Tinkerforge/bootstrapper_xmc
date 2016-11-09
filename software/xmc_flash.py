@@ -25,9 +25,33 @@ BSL_BR_OK  = [0xF0]
 BSL_OK     = [0x01]
 BSL_NOK    = [0x02]
 
-def xmc_flash(baudrate, tty, firmware):
-    with serial.Serial() as s:
-        s = serial.Serial()
+class BrickletSerial:
+    baudrate = 19200
+    port = 'ABC'
+    timeout = 0.25
+
+    def __init__(self):
+        pass
+
+    def open(self):
+        pass
+
+    def write(self, data):
+        pass
+
+    def read(self, length):
+        pass
+
+    def flush(self):
+        pass
+
+def xmc_flash(baudrate, tty, firmware, use_bricklet = False):
+    if use_bricklet:
+        Serial = BrickletSerial
+    else:
+        Serial = serial.Serial
+
+    with Serial() as s:
         s.baudrate = baudrate
         s.port = tty
         s.timeout = 0.25

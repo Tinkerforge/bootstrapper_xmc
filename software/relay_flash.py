@@ -31,8 +31,8 @@ def reset_usb():
         device = lsusb_out[3][:-1]
         f = open("/dev/bus/usb/%s/%s"%(bus, device), 'w', os.O_WRONLY)
         fcntl.ioctl(f, USBDEVFS_RESET, 0)
-    except Exception, msg:
-        print "failed to reset device:", msg
+    except Exception as msg:
+        print("failed to reset device:" + msg)
 
 def relay_flash(baudrate, tty, firmware, uid_iqr, uid_master):
     ipcon = IPConnection()

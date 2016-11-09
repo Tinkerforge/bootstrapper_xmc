@@ -83,7 +83,7 @@ def xmc_flash(baudrate, tty, firmware):
             ret_crc = s.read(1)
             crc = 0
             for i in range(256):
-                crc = crc ^ ord(fw[page*256+i])
+                crc = crc ^ fw[page*256+i]
 
             print("Read CRC (mcu vs calc): {0} vs {1}".format(ord(ret_crc), crc))
             if crc != ord(ret_crc):

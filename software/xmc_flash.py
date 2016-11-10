@@ -54,7 +54,7 @@ def xmc_flash(baudrate, tty, firmware, use_bricklet = False):
     with Serial() as s:
         s.baudrate = baudrate
         s.port = tty
-        s.timeout = 0.25
+        s.timeout = 0.2
         s.open()
 
         print("Opening " + str(s.name))

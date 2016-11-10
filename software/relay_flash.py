@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-CONFIG_BAUDRATE   = 19200 #115200 # 115200 is maximum for standard bootstrap loader
+CONFIG_BAUDRATE   = 500000 # 19200 is maximum for standard baud rate that works well
 CONFIG_TTY        = '/dev/ttyUSB0'
 CONFIG_FIRMWARE   = 'fw.bin'
 

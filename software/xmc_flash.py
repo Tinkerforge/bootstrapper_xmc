@@ -4,7 +4,7 @@
 # Copy firmware as "fw.bin" in software folder.
 # Configure variables below as necessary
 
-CONFIG_BAUDRATE = 19200 #115200 # 115200 is maximum for standard bootstrap loader
+CONFIG_BAUDRATE = 500000 # 19200 is maximum for standard baud rate that works well
 CONFIG_TTY      = '/dev/ttyACM0'
 CONFIG_FIRMWARE = 'fw.bin'
 

@@ -60,14 +60,14 @@ inline void ram_init(void) {
 }
 #endif
 
-inline void led_init(void) {
+static inline void led_init(void) {
 	XMC_GPIO_CONFIG_t led;
 	led.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL;
-	led.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+	led.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW;
 	XMC_GPIO_Init(BOOTSTRAPPER_STATUS_LED_PIN, &led);
 }
 
-inline void usic_init(void) {
+static inline void usic_init(void) {
 	// Configure buffer size
 	WR_REG(BOOTSTRAPPER_USIC->DX0CR, USIC_CH_DX0CR_DSEL_Msk, 0, 0);
 	WR_REG(BOOTSTRAPPER_USIC->TBCTR, 0x0700003FU, 0, 0x01000000);

@@ -109,6 +109,9 @@ def xmc_flash(baudrate, tty, firmware, use_bricklet = False):
             for i in range(256):
                 crc = crc ^ fw[page*256+i]
 
+            if len(ret_crc) < 1:
+                raise Exception("Did not get CRC as answer for page write")
+
             print("Read CRC (mcu vs calc): {0} vs {1}".format(ord(ret_crc), crc))
             if crc != ord(ret_crc):
                 raise Exception("CRC Error")

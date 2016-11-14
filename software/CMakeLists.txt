@@ -1,8 +1,13 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
+if(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config_custom.txt)
+	include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config_custom.txt)
+else()
+	include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config_default.txt)
+endif()
+
 SET(PROJECT_NAME bootstrapper)
 SET(CHIP_FAMILY XMC1)
-SET(CHIP XMC1100_Q024x0016)
 SET(MCU cortex-m0\ -mthumb)
 PROJECT(${PROJECT_NAME})
 
@@ -21,8 +26,17 @@ INCLUDE_DIRECTORIES(
 	"${PROJECT_SOURCE_DIR}/src/"
 	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/XMCLib/inc/"
 	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Include/"
+)
+
+if(CHIP STREQUAL "XMC1100_Q024x0016")
+INCLUDE_DIRECTORIES(
 	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1100_series/Include/"
 )
+elseif(CHIP STREQUAL "XMC1403_Q048x0064")
+INCLUDE_DIRECTORIES(
+	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1400_series/Include/"
+)
+endif()
 
 # find source files
 SET(SOURCES

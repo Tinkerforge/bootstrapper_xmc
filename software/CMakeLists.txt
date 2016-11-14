@@ -51,36 +51,14 @@ SET(SOURCES
 MESSAGE(STATUS "\nFound following source files:\n ${SOURCES}\n")
 
 # define executable
-ADD_EXECUTABLE(${PROJECT_NAME}.elf ${SOURCES})
-SET_TARGET_PROPERTIES(${PROJECT_NAME}.elf PROPERTIES LINKER_LANGUAGE C)
+include(${CMAKE_CURRENT_SOURCE_DIR}/src/bricklib2/cmake/configs/config_define_executable.txt)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}.elf -lc_nano)
+# define standard compile and linker flags
+SET(LINKER_SCRIPT_NAME xmc1100_bootstrapper.ld)
+include(${CMAKE_CURRENT_SOURCE_DIR}/src/bricklib2/cmake/configs/config_comcu_add_standard_flags.txt)
 
-# define compile flags
-SET_TARGET_PROPERTIES(${PROJECT_NAME}.elf PROPERTIES COMPILE_FLAGS
-	"${DEBUG} -mcpu=${MCU} -std=gnu99  -Wall --specs=nano.specs -mlong-calls -ffunction-sections -fdata-sections -O${OPTIMIZATION_LEVEL}"
-)
-
-#define linker flags
-SET_TARGET_PROPERTIES(${PROJECT_NAME}.elf PROPERTIES LINK_FLAGS
-	"-nostartfiles -mcpu=${MCU} -Wl,--gc-sections -T\"${PROJECT_SOURCE_DIR}/src/linker_script.ld\" "
-)
-
-ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}.elf POST_BUILD COMMAND 
-                   ${CMAKE_OBJCOPY} -S -O binary 
-                   ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin)
-
-ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}.elf POST_BUILD COMMAND 
-                   ${CMAKE_SIZE} 
-                   ${OBJECT} ${PROJECT_NAME}.elf)
-                   
-ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}.elf POST_BUILD COMMAND 
-                   ${CMAKE_OBJDUMP} -D
-                   ${PROJECT_NAME}.elf > statistics.objdump)
-
-ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}.elf POST_BUILD COMMAND 
-                   ${CMAKE_NM} --print-size --size-sort --radix=d
-                   ${PROJECT_NAME}.elf > statistics.function_sizes)
+# add custom build commands
+include(${CMAKE_CURRENT_SOURCE_DIR}/src/bricklib2/cmake/configs/config_comcu_add_standalone_custom_commands.txt)
  
 # add preprocessor defines
 ADD_DEFINITIONS(-D${CHIP} -D__${CHIP_FAMILY}__ -DNOSTARTFILES)

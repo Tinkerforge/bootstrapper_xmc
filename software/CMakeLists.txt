@@ -54,6 +54,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/src/bricklib2/cmake/configs/config_define_ex
 
 # define standard compile and linker flags
 SET(LINKER_SCRIPT_NAME xmc1100_bootstrapper.ld)
+SET(FLASH_LENGTH ${CHIP_FLASH_LENGTH}) 
+SET(SRAM_LENGTH 0x3E00) # Set SRAM length and origin according to ROM bootloader definitions for bootstrapper
+SET(SRAM_ORIGIN 0x20000200)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src/bricklib2/cmake/configs/config_comcu_add_standard_flags.txt)
 
 # add custom build commands

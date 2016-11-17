@@ -113,6 +113,7 @@ int main(void) {
 	}
 
 #if BOOTSTRAPPER_BMI_WITH_CAN == 1
+//	uint32_t bmi = 0b1000000 << 0  | // ASC BSL without timeout
 	uint32_t bmi = 0b1010000 << 0  | // ASC BSL with timeout
 	               0b1       << 7  | // Boot configuration type selection (boot from BMI)
 	               0b1       << 8  | // DAP Type Selection

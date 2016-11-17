@@ -74,7 +74,7 @@ static inline void usic_init(void) {
 	WR_REG(BOOTSTRAPPER_USIC->RBCTR, 0x0700003FU, 0, 0x01000000);
 }
 
-int __attribute__ ((section (".entry"))) main(void) {
+int main(void) {
 #ifdef BOOTSTRAPPER_NEEDS_RAM_INIT
 	ram_init();
 #endif

@@ -24,6 +24,8 @@
 
 #include "xmc_gpio.h"
 
+// GPS V2
+#if 0
 #define BOOTSTRAPPER_STATUS_LED_PIN P2_1
 #define BOOTSTRAPPER_USIC           USIC0_CH0
 #define BOOTSTRAPPER_PAGE_SIZE      256
@@ -31,5 +33,17 @@
 #define BOOTSTRAPPER_FLASH_SIZE     (16*1024)
 
 #define BOOTSTRAPPER_BMI_WITH_CAN   0
+#endif
+
+// RS485
+#if 1
+#define BOOTSTRAPPER_STATUS_LED_PIN P4_5
+#define BOOTSTRAPPER_USIC           USIC0_CH1
+#define BOOTSTRAPPER_PAGE_SIZE      256
+#define BOOTSTRAPPER_FLASH_START    0x10001000
+#define BOOTSTRAPPER_FLASH_SIZE     (64*1024)
+
+#define BOOTSTRAPPER_BMI_WITH_CAN   1
+#endif
 
 #endif

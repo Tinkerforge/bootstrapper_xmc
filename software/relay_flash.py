@@ -2,7 +2,7 @@
 
 CONFIG_BAUDRATE   = 500000 # 19200 is maximum for standard baud rate that works well
 CONFIG_TTY        = '/dev/ttyUSB0'
-CONFIG_FIRMWARE   = 'fw.bin'
+CONFIG_FIRMWARE   = 'bl.bin'
 
 CONFIG_UID_IQR    = 'uf8'
 CONFIG_UID_MASTER = '6qzRzc'

@@ -101,9 +101,16 @@ int main(void) {
 		XMC_FLASH_ErasePage(page_address);
 		XMC_FLASH_ProgramVerifyPage(page_address, (uint32_t*)page);
 
-		// Check if we are done
+		// Check if we are done with writing of bootloader
 		page_num++;
-		if(page_num == (BOOTSTRAPPER_FLASH_SIZE/BOOTSTRAPPER_PAGE_SIZE)) {
+		if(page_num == (BOOTSTRAPPER_BOOTLOADER_SIZE/BOOTSTRAPPER_PAGE_SIZE)) {
+			// Make sure that we always invalidate firmware
+			uint32_t *page_address = (uint32_t*)(BOOTSTRAPPER_FLASH_START + page_num * BOOTSTRAPPER_PAGE_SIZE);
+			XMC_FLASH_ErasePage(page_address);
+			for(uint16_t i = 0; i < BOOTSTRAPPER_PAGE_SIZE; i++) {
+				page[i] = 0xFF;
+			}
+			XMC_FLASH_ProgramVerifyPage(page_address, (uint32_t*)page);
 			break;
 		}
 
@@ -112,19 +119,19 @@ int main(void) {
 		BOOTSTRAPPER_USIC->IN[0] = crc;
 	}
 
+
 #if BOOTSTRAPPER_BMI_WITH_CAN == 1
-//	uint32_t bmi = 0b1000000 << 0  | // ASC BSL without timeout
 	uint32_t bmi = 0b1010000 << 0  | // ASC BSL with timeout
 	               0b1       << 7  | // Boot configuration type selection (boot from BMI)
 	               0b1       << 8  | // DAP Type Selection
-	               0b11      << 9  | // SWD/SPD Input/Output Selection
+	               0b00      << 9  | // SWD/SPD Input/Output Selection
 	               0b1       << 11 | // CAN Clock Source for CAN BSL Mode
 	               0b0001    << 12;  // Timeout = 333ms
 #else
 	uint32_t bmi = 0b010000 << 0  | // ASC BSL with timeout
 	               0b11     << 6  | // Reserved must programmed to 1
 	               0b1      << 8  | // DAP Type Selection
-	               0b11     << 9  | // SWD/SPD Input/Output Selection
+	               0b00     << 9  | // SWD/SPD Input/Output Selection
 	               0b1      << 11 | // Reserved must programmed to 1
 	               0b0001   << 12;  // Timeout = 333ms
 #endif

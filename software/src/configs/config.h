@@ -36,4 +36,6 @@
 #define BOOTSTRAPPER_VERSION_MINOR 0
 #define BOOTSTRAPPER_VERSION_REVISION 0
 
+#define BOOTSTRAPPER_BOOTLOADER_SIZE (8*1024) // Bootloader should always have size 8kb
+
 #endif

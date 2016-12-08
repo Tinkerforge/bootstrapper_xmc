@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-CONFIG_BAUDRATE   = 500000 # 19200 is maximum for standard baud rate that works well
+CONFIG_BAUDRATE   = 200000 #19200 #19200 is maximum for standard baud rate that works well
 CONFIG_TTY        = '/dev/ttyUSB0'
 CONFIG_FIRMWARE   = 'bl.bin'
 
@@ -43,29 +43,22 @@ def relay_flash(baudrate, tty, firmware, uid_iqr, uid_master):
 
 #    reset_usb()
 #    time.sleep(1)
-    master.get_chibi_error_log()
-    iqr.set_value(MASK_NONE)
-    time.sleep(0.25)
-    iqr.set_value(MASK_POWER | MASK_DATA)
 
-    i = 0
+    i = 10
     while True:
-        i += 1
-        if i == 20:
+        if i == 10:
+            master.get_chibi_error_log()
             iqr.set_value(MASK_DATA)
-            time.sleep(0.25)
+            time.sleep(0.2)
             iqr.set_value(MASK_POWER | MASK_DATA)
             i = 0
 
+        i += 1
         try:
+            time.sleep(0.01)
             xmc_flash(baudrate, tty, firmware)
             break
         except Exception as e:
-            if 'received: 0x2' in str(e):
-                iqr.set_value(MASK_DATA)
-                time.sleep(0.25)
-                iqr.set_value(MASK_POWER | MASK_DATA)
-
             print(str(e))
         
     iqr.set_value(MASK_POWER)

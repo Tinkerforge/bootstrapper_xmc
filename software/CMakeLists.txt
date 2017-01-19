@@ -32,6 +32,14 @@ if(CHIP MATCHES "^XMC11.*$")
 INCLUDE_DIRECTORIES(
 	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1100_series/Include/"
 )
+elseif(CHIP MATCHES "^XMC12.*")
+INCLUDE_DIRECTORIES(
+	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1200_series/Include/"
+)
+elseif(CHIP MATCHES "^XMC13.*")
+INCLUDE_DIRECTORIES(
+	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1300_series/Include/"
+)
 elseif(CHIP MATCHES "^XMC14.*")
 INCLUDE_DIRECTORIES(
 	"${PROJECT_SOURCE_DIR}/src/bricklib2/xmclib/CMSIS/Infineon/XMC1400_series/Include/"

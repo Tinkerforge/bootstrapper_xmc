@@ -101,6 +101,10 @@ int main(void) {
 		XMC_FLASH_ErasePage(page_address);
 		XMC_FLASH_ProgramVerifyPage(page_address, (uint32_t*)page);
 
+		// Return CRC for every page
+		while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 11)) >> 11));
+		BOOTSTRAPPER_USIC->IN[0] = crc;
+
 		// Check if we are done with writing of bootloader
 		page_num++;
 		if(page_num == (BOOTSTRAPPER_BOOTLOADER_SIZE/BOOTSTRAPPER_PAGE_SIZE)) {
@@ -114,9 +118,6 @@ int main(void) {
 			break;
 		}
 
-		// Return CRC for every page but the last one
-		while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 11)) >> 11));
-		BOOTSTRAPPER_USIC->IN[0] = crc;
 	}
 
 

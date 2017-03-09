@@ -102,9 +102,6 @@ def xmc_flash(baudrate, tty, firmware, use_bricklet = False):
             print("Write firmware page " + str(page))
             s.write(fw[page*256:(page+1)*256])
             
-            if page == pages-1: # Last page does not return CRC
-                break
-
             ret_crc = s.read(1)
             crc = 0
             for i in range(256):

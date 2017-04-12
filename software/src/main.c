@@ -111,7 +111,7 @@ int main(void) {
 
 	// Remove data from buffer
 	while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 3) ) >> 3)) {
-		volatile uint8_t _ = (BOOTSTRAPPER_USIC->OUTR & 0xFF);
+		volatile __attribute__((unused)) uint8_t _ = (BOOTSTRAPPER_USIC->OUTR & 0xFF);
 	}
 
 	uint16_t page_num = 0;
@@ -175,4 +175,3 @@ int main(void) {
 
 	return 0;
 }
-

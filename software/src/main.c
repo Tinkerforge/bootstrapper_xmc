@@ -22,6 +22,8 @@
 
 #include "xmc_gpio.h"
 #include "xmc_flash.h"
+#include "xmc_usic.h"
+#include "xmc_uart.h"
 
 #include "configs/config.h"
 
@@ -69,9 +71,34 @@ static inline void led_init(void) {
 
 static inline void usic_init(void) {
 	// Configure buffer size
-	WR_REG(BOOTSTRAPPER_USIC->DX0CR, USIC_CH_DX0CR_DSEL_Msk, 0, 0);
-	WR_REG(BOOTSTRAPPER_USIC->TBCTR, 0x0700003FU, 0, 0x01000000);
-	WR_REG(BOOTSTRAPPER_USIC->RBCTR, 0x0700003FU, 0, 0x01000000);
+	WR_REG(BOOTSTRAPPER_USIC_CHANNEL->DX0CR, USIC_CH_DX0CR_DSEL_Msk, 0, 0);
+	WR_REG(BOOTSTRAPPER_USIC_CHANNEL->TBCTR, 0x0700003FU, 0, 0x01000000);
+	WR_REG(BOOTSTRAPPER_USIC_CHANNEL->RBCTR, 0x0700003FU, 0, 0x01000000);
+
+
+	// Configure pins, so bootloader can always use full-duplex (bootstrapper may be half-duplex)
+
+	// TX pin configuration
+	const XMC_GPIO_CONFIG_t tx_pin_config = {
+		.mode             = BOOTSTRAPPER_TX_PIN_AF,
+		.output_level     = XMC_GPIO_OUTPUT_LEVEL_HIGH
+	};
+
+	// RX pin configuration
+	const XMC_GPIO_CONFIG_t rx_pin_config = {
+		.mode             = XMC_GPIO_MODE_INPUT_PULL_UP,
+		.input_hysteresis = XMC_GPIO_INPUT_HYSTERESIS_STANDARD
+	};
+
+	// Configure  pins
+	XMC_GPIO_Init(BOOTSTRAPPER_TX_PIN, &tx_pin_config);
+	XMC_GPIO_Init(BOOTSTRAPPER_RX_PIN, &rx_pin_config);
+
+	// Set input source path
+	XMC_UART_CH_SetInputSource(BOOTSTRAPPER_USIC, BOOTSTRAPPER_RX_INPUT, BOOTSTRAPPER_RX_SOURCE);
+
+	// Start UART
+	XMC_UART_CH_Start(BOOTSTRAPPER_USIC);
 }
 
 int main(void) {
@@ -81,6 +108,11 @@ int main(void) {
 
 	led_init();
 	usic_init();
+
+	// Remove data from buffer
+	while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 3) ) >> 3)) {
+		volatile uint8_t _ = (BOOTSTRAPPER_USIC->OUTR & 0xFF);
+	}
 
 	uint16_t page_num = 0;
 	uint8_t page[BOOTSTRAPPER_PAGE_SIZE];

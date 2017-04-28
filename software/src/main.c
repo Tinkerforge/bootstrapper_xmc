@@ -24,6 +24,7 @@
 #include "xmc_flash.h"
 #include "xmc_usic.h"
 #include "xmc_uart.h"
+#include "xmc_wdt.h"
 
 #include "configs/config.h"
 
@@ -61,6 +62,7 @@ inline void ram_init(void) {
 	}
 }
 #endif
+
 
 static inline void led_init(void) {
 	XMC_GPIO_CONFIG_t led;
@@ -117,13 +119,16 @@ int main(void) {
 	uint16_t page_num = 0;
 	uint8_t page[BOOTSTRAPPER_PAGE_SIZE];
 	while(true) {
+		XMC_WDT_Service();
 		// Toggle status LED for every page write
 		XMC_GPIO_ToggleOutput(BOOTSTRAPPER_STATUS_LED_PIN);
 
 		// Get one page and calculate CRC
 		uint8_t crc = 0;
 		for(uint16_t i = 0; i < BOOTSTRAPPER_PAGE_SIZE; i++) {
-			while(((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 3) ) >> 3));
+			while(((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 3) ) >> 3)) {
+				XMC_WDT_Service();
+			}
 			page[i] = (BOOTSTRAPPER_USIC->OUTR & 0xFF);
 			crc ^= page[i];
 		}
@@ -134,7 +139,9 @@ int main(void) {
 		XMC_FLASH_ProgramVerifyPage(page_address, (uint32_t*)page);
 
 		// Return CRC for every page
-		while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 11)) >> 11));
+		while(!((BOOTSTRAPPER_USIC->TRBSR & (0x01UL << 11)) >> 11)) {
+			XMC_WDT_Service();
+		}
 		BOOTSTRAPPER_USIC->IN[0] = crc;
 
 		// Check if we are done with writing of bootloader
